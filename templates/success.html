@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+    .container{
+        background-color:white;
+        height:100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+      button{
+        height:45px;
+        width: 200px;
+        background-color: rgb(62, 171, 7);
+        border: none;
+        color: white;
+        border-radius: 5px;
+        margin-top: 10px;
+        padding: 13px;
+          font-family: 'Quicksand', sans-serif;
+          font-weight: bold;
+    }
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48;
+    color: white;
+    padding: 22px;
+    font-size: 50px;
+    font-weight: 700;
+
+}
+
+.message-container{
+    width: 50%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    border: 2px solid #000;
+    border-radius: 5px;
+}
+
+.message-icon{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.message-details{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+
+.sample-data{
+    display: flex;
+    gap: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="message-container">
+            <div class="message-icon">
+            <p style="font-weight: bolder; color: green; font-size: xx-large">Success</p>
+            <p style="font-weight: bolder; color: green; ">Product Paid Successfully</p>
+            </div>
+            <div class="message-details">
+                <p style="font-weight: bold; color: black">CARD INFORMATION</p>
+                <div class="sample-data">
+                    <p style="font-weight: bold; color: black">UID:</p>
+                    <p id="uid"></p>
+                </div>
+                 <div class="sample-data">
+                     <p style="font-weight: bold; color: black">Balance:</p>
+                     <p id="balance"></p>
+                </div>
+                 <div class="sample-data">
+                     <p style="font-weight: bold; color: black">Points:</p>
+                     <p id="points"></p>
+                </div>
+
+<button onclick="homePage()">Ok</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+     // Extract the data query parameter value from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const dataParam = urlParams.get('message');
+
+        // Parse the data JSON string back into an object
+        const data = JSON.parse(decodeURIComponent(dataParam));
+
+        // Render the data properties in the HTML
+        document.getElementById("uid").innerHTML= data.uid.toString()
+        document.getElementById("balance").innerText = data.balance
+        document.getElementById("points").innerText = data.points
+
+     function homePage(){
+            window.location.href = '/'
+     }
+</script>
+</html>
