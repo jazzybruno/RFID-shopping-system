@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Top Up</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,700;1,100;1,200;1,700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -13,46 +16,113 @@
         }
 
         .container {
+             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+            button {
+              width: 40%;
+           background-color: rgba(29, 29, 213, 0.54);
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color:  white;
+            text-decoration: none;
             text-align: center;
-            border: 1px solid #ccc;
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
+            border-radius: 5px;
+            padding: 8px;
             font-family: 'Quicksand', sans-serif;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        label {
-            display: block;
-
-            margin-bottom: 10px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            background-color:  rgb(62, 171, 7);
-            color: white;
-            padding: 10px 20px;
+            font-weight: bold;
             border: none;
-            cursor: pointer;
+
+        }
+
+        button:hover {
+              width: 40%;
+           background-color: white;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color:  rgba(29, 29, 213, 0.54);;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            padding: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: bold;
+            border: 1px solid  rgba(29, 29, 213, 0.54);
+
+        }
+
+            .formContainer{
+                background: white;
+                width: 50%;
+                height: 40vh;
+                margin-bottom: 10px;
+                border-radius: 10px;
+                border: 2px solid rgba(29, 29, 213, 0.47);
+                display: flex;
+                flex-direction: row;
+            }
+
+            .formContainer1{
+                color: black;
+                width: 40%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: white;
+            }
+
+            .formContainer1 > img {
+                height: 90%;
+                width: 90%;
+            }
+
+            .formContainer2{
+                width: 60%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+        .formContainer2 > label{
+              font-family: 'Quicksand', sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            color: gray;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .formContainer2 > input[type="number"]{
+            width: 80%;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 3px;
+            background: rgba(229, 224, 224, 0.44);
         }
     </style>
 </head>
 <body>
    <div class="container">
-       <h2>Hello, welcome to card topping up</h2>
-       <form action="/topPost" method="post">
-           <label for="amount">Enter the amount to top up:</label>
-           <input type="number" name="amount" id="amount">
-           <button type="submit">Top Up</button>
+        <div>
+           <img src="../static/images/cart.jpeg" alt="noImageFound">
+       </div>
+       <div style="font-size: 25px; color: rgba(29, 29, 213, 0.54);  font-family: 'Quicksand', sans-serif; font-weight: bold">Embedded Systems Shop Topping Up</div>
+       <div style="color: black; font-weight: bold; font-family: 'Quicksand', sans-serif; font-size: 18px; margin-bottom: 10px; margin-top: 10px">Hello, Welcome to card topping up</div>
+           <form class="formContainer" action="/topPost" method="post">
+             <div class="formContainer1">
+                 <img src="../static/images/tag.webp">
+             </div>
+               <div class="formContainer2">
+                <label for="amount">Enter the amount to top up:</label>
+                <input class="" type="number" name="amount" id="amount" required>
+                <button type="submit">Top Up</button>
+               </div>
        </form>
    </div>
 </body>
