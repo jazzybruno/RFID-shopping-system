@@ -128,7 +128,7 @@
             window.location.href = '/success?message=' + encodeURIComponent(JSON.stringify(data.message));
         } else {
             // Redirect to the error route with the error message
-            window.location.href = '/error?message=' + encodeURIComponent(data.message);
+            window.location.href = '/error?cards=Product Paid Successfully&message=' + encodeURIComponent(data.message);
         }
     })
     .catch(error => {

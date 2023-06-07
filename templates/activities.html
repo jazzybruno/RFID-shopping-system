@@ -67,7 +67,37 @@
        <div class="linksContainer">
            <a class="link" href="/purchase" style="" > Purchase Items </a>
            <a class="link" href="/topUp" style="" > Top Up Card </a>
+           <a class="link" href="#" onclick="showBalance()" style="" > Check Balance </a>
        </div>
    </div>
+<script>
+  function showBalance() {
+      console.log("Hello World")
+        {#document.getElementById("first").innerText = ""#}
+        document.querySelector(".mainContainer").innerHTML = "<div style='width: 100%;height: 50vh; display: flex; flex-direction: column ; align-items: center; justify-content: center'><h1 style='text-align: center; color: #1d1dd5'>Please Bring Your Card Closer To The Reader</h1> <h3 style='color: black; text-align: center'>Processing ......</h3></div>"
+    fetch('/balance', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Check if the processing was successful
+        if (data.success) {
+
+            // Redirect to the success route with the processed data
+            window.location.href = '/success?message=' + encodeURIComponent(JSON.stringify(data.message));
+        } else {
+            // Redirect to the error route with the error message
+            window.location.href = '/error?cards=Balance Retrieved Successfully&message=' + encodeURIComponent(data.message);
+        }
+    })
+    .catch(error => {
+        // Redirect to the error route with the error message
+        window.location.href = '/error?message=' + encodeURIComponent(error.message);
+    });
+}
+</script>
 </body>
 </html>

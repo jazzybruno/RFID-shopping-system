@@ -4,7 +4,7 @@ import time
 import serial
 from functions import Card, play_audio, products
 import sys
-from functions import apiEndpoint, topUpEndpoint
+from functions import apiEndpoint, topUpEndpoint, balanceEndpoint
 
 app = Flask(__name__)
 
@@ -16,7 +16,8 @@ def activity():
 
 @app.route('/topUp')
 def topUp():
-    return render_template('topUp.html')
+    string_value = request.args.get('value')
+    return render_template('topUp.html', value=string_value)
 
 
 @app.route('/purchase')
@@ -60,6 +61,11 @@ def topUpPost():
         amount = float(request.form.get('amount'))
         print(amount)
         return topUpEndpoint(amount=amount)
+
+
+@app.route('/balance', methods=['POST'])
+def balance():
+    return balanceEndpoint();
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import sqlite3
 import pygame
 import serial
-from flask import jsonify, request
+from flask import jsonify, request, redirect, url_for
 import time
 
 products = {
@@ -181,16 +181,91 @@ def apiEndpoint(product):
             if (isbought):
                 print("It was bought")
                 returnedObject = card.display()
+                conn.commit()
                 conn.close()
                 play_audio("purchased")
+                data = f"{card.balance}|{card.points}".encode()
+                if data != b"":
+                    # print(data)
+                    ser.write(data)
                 return jsonify(
                     {'success': True, 'message': returnedObject})
             else:
                 conn.close()
-                return jsonify({'success': False, 'message': 'Product Payment was unsuccessful', 'cards': ''})
+                return jsonify({'success': False, 'message': 'Insufficient Balance', 'cards': ''})
 
 
 def topUpEndpoint(amount):
+    global card
+    conn = sqlite3.connect('db.db')
+
+    timestamp = time.time()
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS cards (
+              id STRING PRIMARY KEY,
+              amount REAL,
+              points INTEGER
+            );''')
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS transactions (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              card STRING,
+              amount REAL,
+              points INTEGER,
+              product INTEGER
+            );''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS topups (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              card STRING,
+              amount REAL
+            );''')
+    conn.commit()
+
+    # insert
+
+    # conn.execute("INSERT INTO cards VALUES (?, ?, ?)", card1)
+    # conn.execute("INSERT INTO cards VALUES (?, ?, ?)", card2)
+
+    # conn.commit()
+
+    cursor = conn.cursor()
+    # cursor.execute("SELECT * FROM cards")
+
+    # Fetch all rows from the result
+    # rows = cursor.fetchall()
+
+    # Process the fetched data
+    # for row in rows:
+    #     card_id, amount, points = row
+    #     print(f"Card ID: {card_id}, Amount: {amount}, Points: {points}")
+
+    ser = serial.Serial('COM7', 9600)
+
+    # read data from serial
+    while True:
+        line = ser.readline().decode('utf-8').strip()
+        print(line)
+
+        if "uid" in line:
+            card_id = line.split(':')[1]
+            card = Card(cursor=cursor, card_id=card_id)
+            amountNew = card.top_up(amount)
+            conn.commit()
+            if(amountNew == amount):
+                print("Success in topping up card")
+                conn.close()
+                play_audio("topup")
+                data = f"{card.balance}|{card.points}".encode()
+                if data != b"":
+                    # print(data)
+                    ser.write(data)
+                return redirect(url_for('topUp'))
+            else:
+                print("Failed to top up the card")
+                conn.close()
+                return jsonify({'success': False, 'message': 'Card Top Up Failed'})
+
+def balanceEndpoint():
     global card
     conn = sqlite3.connect('db.db')
 
@@ -248,14 +323,14 @@ def topUpEndpoint(amount):
             card_id = line.split(':')[1]
             card = Card(cursor=cursor, card_id=card_id)
             conn.commit()
-            amountNew = card.top_up(amount)
-            if(amountNew == amount):
-                print("Success in topping up card")
+
+            returnedObject = card.display()
+            if (returnedObject != None):
+                print("Balance Got")
+                conn.commit()
                 conn.close()
-                play_audio("topup")
                 return jsonify(
-                    {'success': True, 'message': "Success in topping up card"})
+                    {'success': True, 'message': returnedObject})
             else:
-                print("Failed to top up the card")
                 conn.close()
-                return jsonify({'success': False, 'message': 'Card Top Up Failed'})
+                return jsonify({'success': False, 'message': 'An Error Happened', 'cards': ''})
