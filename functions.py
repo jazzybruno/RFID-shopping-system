@@ -109,11 +109,13 @@ class Card:
             return False
 
     def top_up(self, amount):
+        initialBalance = self.balance
         cursor = self.cursor
         cursor.execute("UPDATE cards SET amount=? WHERE id=?", (self.balance + amount, self.card_id))
         cursor.execute("INSERT INTO topups (card, amount) VALUES (?, ?)", (self.card_id, amount))
         self.balance += amount
         print(f"Top-up successful. Current balance: {self.balance}")
+        return self.balance - initialBalance
 
 
 def apiEndpoint(product):
@@ -174,7 +176,6 @@ def apiEndpoint(product):
             card_id = line.split(':')[1]
             card = Card(cursor=cursor, card_id=card_id)
             conn.commit()
-            print("HBRUHESBVIHBIKW")
 
             isbought = card.buy(product=product)
             if (isbought):
@@ -187,3 +188,74 @@ def apiEndpoint(product):
             else:
                 conn.close()
                 return jsonify({'success': False, 'message': 'Product Payment was unsuccessful', 'cards': ''})
+
+
+def topUpEndpoint(amount):
+    global card
+    conn = sqlite3.connect('db.db')
+
+    card1 = ("ba6cc043", 500, 0)
+    card2 = ("daafdc73", 500, 0)
+
+    timestamp = time.time()
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS cards (
+              id STRING PRIMARY KEY,
+              amount REAL,
+              points INTEGER
+            );''')
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS transactions (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              card STRING,
+              amount REAL,
+              points INTEGER,
+              product INTEGER
+            );''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS topups (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              card STRING,
+              amount REAL
+            );''')
+    conn.commit()
+
+    # insert
+
+    # conn.execute("INSERT INTO cards VALUES (?, ?, ?)", card1)
+    # conn.execute("INSERT INTO cards VALUES (?, ?, ?)", card2)
+
+    # conn.commit()
+
+    cursor = conn.cursor()
+    # cursor.execute("SELECT * FROM cards")
+
+    # Fetch all rows from the result
+    # rows = cursor.fetchall()
+
+    # Process the fetched data
+    # for row in rows:
+    #     card_id, amount, points = row
+    #     print(f"Card ID: {card_id}, Amount: {amount}, Points: {points}")
+
+    ser = serial.Serial('COM7', 9600)
+
+    # read data from serial
+    while True:
+        line = ser.readline().decode('utf-8').strip()
+        print(line)
+
+        if "uid" in line:
+            card_id = line.split(':')[1]
+            card = Card(cursor=cursor, card_id=card_id)
+            conn.commit()
+            amountNew = card.top_up(amount)
+            if(amountNew == amount):
+                print("Success in topping up card")
+                conn.close()
+                play_audio("topup")
+                return jsonify(
+                    {'success': True, 'message': "Success in topping up card"})
+            else:
+                print("Failed to top up the card")
+                conn.close()
+                return jsonify({'success': False, 'message': 'Card Top Up Failed'})

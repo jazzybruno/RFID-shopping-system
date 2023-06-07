@@ -4,12 +4,22 @@ import time
 import serial
 from functions import Card, play_audio, products
 import sys
-from functions import apiEndpoint
+from functions import apiEndpoint, topUpEndpoint
 
 app = Flask(__name__)
 
 
 @app.route('/')
+def activity():
+    return render_template('activities.html')
+
+
+@app.route('/topUp')
+def topUp():
+    return render_template('topUp.html')
+
+
+@app.route('/purchase')
 def index():
     products = [
         {"id": 1, "name": "Camera", "price": 30.99, "points": 100, "image_src": "./static/images/camera.png"},
@@ -43,6 +53,13 @@ def process():
         print(product)
         return apiEndpoint(product=product)
 
+
+@app.route('/topPost', methods=['POST'])
+def topUpPost():
+    if request.method == 'POST':
+        amount = float(request.form.get('amount'))
+        print(amount)
+        return topUpEndpoint(amount=amount)
 
 
 if __name__ == '__main__':
